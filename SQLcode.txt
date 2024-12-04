@@ -1,0 +1,339 @@
+
+CREATE TABLE Review (
+    ReviewID INTEGER PRIMARY KEY AUTOINCREMENT,
+    Comments TEXT NOT NULL,
+    ReviewDate DATE NOT NULL,
+    UserID INTEGER NOT NULL,
+    FOREIGN KEY (UserID) REFERENCES User(UserID)
+);
+
+CREATE TABLE User (
+    UserID INTEGER PRIMARY KEY AUTOINCREMENT,
+    Username TEXT NOT NULL,
+    Costs REAL NOT NULL
+);
+
+CREATE TABLE UserReviews (
+    UserID INTEGER NOT NULL,
+    ReviewID INTEGER NOT NULL,
+    FOREIGN KEY (UserID) REFERENCES User(UserID),
+    FOREIGN KEY (ReviewID) REFERENCES Review(ReviewID),
+    PRIMARY KEY (UserID, ReviewID)
+);
+
+CREATE TABLE UserBookings (
+    UserID INTEGER NOT NULL,
+    BookingID INTEGER NOT NULL,
+    FOREIGN KEY (UserID) REFERENCES User(UserID),
+    FOREIGN KEY (BookingID) REFERENCES Booking(BookingID),
+    PRIMARY KEY (UserID, BookingID)
+);
+
+CREATE TABLE Renting (
+    UserID INTEGER NOT NULL,
+    LicensePlate TEXT NOT NULL,
+    FOREIGN KEY (UserID) REFERENCES User(UserID),
+    FOREIGN KEY (LicensePlate) REFERENCES Car(LicensePlate),
+    PRIMARY KEY (UserID, LicensePlate)
+);
+
+CREATE TABLE Customer (
+    UserID INTEGER NOT NULL,
+    RentalID INTEGER NOT NULL,
+    FOREIGN KEY (UserID) REFERENCES User(UserID),
+    FOREIGN KEY (RentalID) REFERENCES CarRentals(RentalID),
+    PRIMARY KEY (UserID, RentalID)
+);
+
+CREATE TABLE Owned (
+    RentalID INTEGER NOT NULL,
+    LicensePlate TEXT NOT NULL,
+    FOREIGN KEY (RentalID) REFERENCES CarRentals(RentalID),
+    FOREIGN KEY (LicensePlate) REFERENCES Car(LicensePlate),
+    PRIMARY KEY (RentalID, LicensePlate)
+);
+
+CREATE TABLE Status (
+    UserID INTEGER NOT NULL,
+    FlightNumber TEXT NOT NULL,
+    FOREIGN KEY (UserID) REFERENCES User(UserID),
+    FOREIGN KEY (FlightNumber) REFERENCES Flights(FlightNumber),
+    PRIMARY KEY (UserID, FlightNumber)
+);
+
+CREATE TABLE Booked (
+    UserID INTEGER NOT NULL,
+    AccommodationID INTEGER NOT NULL,
+    FOREIGN KEY (UserID) REFERENCES User(UserID),
+    FOREIGN KEY (AccommodationID) REFERENCES Accommodation(AccommodationID),
+    PRIMARY KEY (UserID, AccommodationID)
+);
+
+CREATE TABLE LocatedAt (
+    AccommodationID INTEGER NOT NULL,
+    Postcode TEXT NOT NULL,
+    FOREIGN KEY (AccommodationID) REFERENCES Accommodation(AccommodationID),
+    FOREIGN KEY (Postcode) REFERENCES Location(Postcode),
+    PRIMARY KEY (AccommodationID, Postcode)
+);
+
+CREATE TABLE Booking (
+    BookingID INTEGER PRIMARY KEY AUTOINCREMENT,
+    BookingDate DATE NOT NULL,
+    UserID INTEGER NOT NULL,
+    TotalAmount REAL NOT NULL,
+    PaymentStatus TEXT NOT NULL,
+    FOREIGN KEY (UserID) REFERENCES User(UserID)
+);
+
+CREATE TABLE Flights (
+    FlightNumber TEXT PRIMARY KEY,
+    FlightLength INTEGER NOT NULL,
+    OriginAirport TEXT NOT NULL,
+    DepartureTime DATETIME NOT NULL,
+    ArrivalTime DATETIME NOT NULL
+);
+
+CREATE TABLE Car (
+    LicensePlate TEXT PRIMARY KEY,
+    Brand TEXT NOT NULL,
+    PricePerDay REAL NOT NULL,
+    EngineType TEXT NOT NULL,
+    Length INTEGER NOT NULL,
+    Horsepower INTEGER NOT NULL,
+    Weight INTEGER NOT NULL,
+    Color TEXT NOT NULL,
+    Height INTEGER NOT NULL,
+    NumberOfSeats INTEGER NOT NULL
+);
+
+CREATE TABLE CarRentals (
+    RentalID INTEGER PRIMARY KEY AUTOINCREMENT,
+    Name TEXT NOT NULL,
+    CarsAvailable INTEGER NOT NULL,
+    NumberOfCars INTEGER NOT NULL,
+    CarsLent INTEGER NOT NULL
+);
+
+CREATE TABLE Location (
+    Postcode TEXT PRIMARY KEY,
+    Attractions TEXT NOT NULL,
+    Airport TEXT NOT NULL,
+    LocationType TEXT NOT NULL
+);
+
+CREATE TABLE Accommodation (
+    AccommodationID INTEGER PRIMARY KEY AUTOINCREMENT,
+    Postcode TEXT NOT NULL,
+    City TEXT NOT NULL,
+    Country TEXT NOT NULL,
+    RoomsAvailable INTEGER NOT NULL,
+    Rating REAL NOT NULL,
+    Name TEXT NOT NULL,
+    PhoneNumber TEXT NOT NULL,
+    EmailAddress TEXT NOT NULL,
+    MailAddress TEXT NOT NULL,
+    NumberOfRooms INTEGER NOT NULL,
+    BookedRooms INTEGER NOT NULL,
+    FOREIGN KEY (Postcode) REFERENCES Location(Postcode)
+);
+
+
+
+______________________________________________________________________________________________________________
+______________________________________________________________________________________________________________
+______________________________________________________________________________________________________________
+
+//Boiler adatok 
+
+INSERT INTO User (Username, Costs) VALUES 
+('Alice', 150.75),
+('Bob', 200.50),
+('Charlie', 300.00);
+
+INSERT INTO Review (Comments, ReviewDate, UserID) VALUES 
+('Great service!', '2024-12-01', 1),
+('Could be better.', '2024-12-02', 2),
+('Excellent experience!', '2024-12-03', 3);
+
+INSERT INTO Booking (BookingDate, UserID, TotalAmount, PaymentStatus) VALUES 
+('2024-12-01', 1, 100.50, 'Paid'),
+('2024-12-02', 2, 200.75, 'Pending'),
+('2024-12-03', 3, 300.00, 'Paid');
+
+INSERT INTO Flights (FlightNumber, FlightLength, OriginAirport, DepartureTime, ArrivalTime) VALUES 
+('FL1234', 120, 'JFK Airport', '2024-12-05 08:00:00', '2024-12-05 10:00:00'),
+('FL5678', 180, 'LAX Airport', '2024-12-06 09:00:00', '2024-12-06 12:00:00'),
+('FL9012', 240, 'ORD Airport', '2024-12-07 13:00:00', '2024-12-07 17:00:00');
+
+INSERT INTO Car (LicensePlate, Brand, PricePerDay, EngineType, Length, Horsepower, Weight, Color, Height, NumberOfSeats) VALUES 
+('ABC123', 'Toyota', 50.00, 'Petrol', 4500, 150, 1300, 'Red', 1400, 5),
+('DEF456', 'Honda', 60.00, 'Diesel', 4700, 160, 1400, 'Blue', 1450, 5),
+('GHI789', 'Ford', 55.00, 'Electric', 4600, 170, 1350, 'Black', 1430, 5);
+
+INSERT INTO CarRentals (Name, CarsAvailable, NumberOfCars, CarsLent) VALUES 
+('City Rentals', 10, 15, 5),
+('Highway Rentals', 5, 10, 5),
+('Luxury Rentals', 3, 8, 5);
+
+INSERT INTO Location (Postcode, Attractions, Airport, LocationType) VALUES 
+('10001', 'Central Park, Empire State Building', 'JFK', 'Urban'),
+('20001', 'National Mall, White House', 'DCA', 'Urban'),
+('94103', 'Golden Gate Bridge, Alcatraz', 'SFO', 'Urban');
+
+INSERT INTO Accommodation (Postcode, City, Country, RoomsAvailable, Rating, Name, PhoneNumber, EmailAddress, MailAddress, NumberOfRooms, BookedRooms) VALUES 
+('10001', 'New York', 'USA', 10, 4.5, 'Hotel NY', '123456789', 'info@hotelny.com', '123 Main St', 20, 10),
+('20001', 'Washington DC', 'USA', 5, 4.0, 'Hotel DC', '987654321', 'info@hoteldc.com', '456 Elm St', 15, 10),
+('94103', 'San Francisco', 'USA', 8, 4.8, 'Hotel SF', '555555555', 'info@hotelsf.com', '789 Pine St', 25, 17);
+
+INSERT INTO UserReviews (UserID, ReviewID) VALUES 
+(1, 1),
+(2, 2),
+(3, 3);
+
+INSERT INTO UserBookings (UserID, BookingID) VALUES 
+(1, 1),
+(2, 2),
+(3, 3);
+
+INSERT INTO Renting (UserID, LicensePlate) VALUES 
+(1, 'ABC123'),
+(2, 'DEF456'),
+(3, 'GHI789');
+
+INSERT INTO Customer (UserID, RentalID) VALUES 
+(1, 1),
+(2, 2),
+(3, 3);
+
+INSERT INTO Owned (RentalID, LicensePlate) VALUES 
+(1, 'ABC123'),
+(2, 'DEF456'),
+(3, 'GHI789');
+
+INSERT INTO Status (UserID, FlightNumber) VALUES 
+(1, 'FL1234'),
+(2, 'FL5678'),
+(3, 'FL9012');
+
+INSERT INTO Booked (UserID, AccommodationID) VALUES 
+(1, 1),
+(2, 2),
+(3, 3);
+
+INSERT INTO LocatedAt (AccommodationID, Postcode) VALUES 
+(1, '10001'),
+(2, '20001'),
+(3, '94103');
+
+______________________________________________________________________________________________________________
+______________________________________________________________________________________________________________
+______________________________________________________________________________________________________________
+
+//Lekérdezések és módosítások
+
+INSERT INTO User (Username, Costs) VALUES ('David', 100.50);
+
+UPDATE Review 
+SET Comments = 'Amazing experience!' 
+WHERE ReviewID = 2;
+
+DELETE FROM Booking 
+WHERE BookingID = 3;
+
+UPDATE Accommodation 
+SET RoomsAvailable = RoomsAvailable + 2 
+WHERE AccommodationID = 1;
+
+INSERT INTO Car (LicensePlate, Brand, PricePerDay, EngineType, Length, Horsepower, Weight, Color, Height, NumberOfSeats)
+VALUES ('JKL012', 'BMW', 70.00, 'Diesel', 4800, 200, 1500, 'White', 1450, 5);
+
+
+SELECT * FROM User 
+WHERE Costs > 150;
+
+SELECT * FROM Accommodation 
+WHERE City = 'New York';
+
+SELECT Username, Costs FROM User;
+
+SELECT Brand, PricePerDay FROM Car;
+
+SELECT * FROM Accommodation 
+ORDER BY Rating DESC;
+
+SELECT City, COUNT(*) AS NumberOfAccommodations 
+FROM Accommodation 
+GROUP BY City;
+
+SELECT PaymentStatus, SUM(TotalAmount) AS TotalPayments 
+FROM Booking 
+GROUP BY PaymentStatus;
+
+SELECT AVG(Rating) AS AverageRating 
+FROM Accommodation;
+
+SELECT SUM(CarsAvailable) AS TotalCarsAvailable 
+FROM CarRentals;
+
+SELECT * FROM User 
+WHERE UserID IN (
+    SELECT UserID FROM Booking 
+    WHERE TotalAmount = (SELECT MAX(TotalAmount) FROM Booking)
+);
+
+SELECT * FROM Accommodation 
+WHERE Rating > (SELECT AVG(Rating) FROM Accommodation);
+
+SELECT U.Username, B.TotalAmount 
+FROM User U
+INNER JOIN Booking B ON U.UserID = B.UserID;
+
+SELECT U.Username, C.Brand, C.PricePerDay 
+FROM User U
+INNER JOIN Renting R ON U.UserID = R.UserID
+INNER JOIN Car C ON R.LicensePlate = C.LicensePlate;
+
+SELECT U.Username, R.Comments, R.ReviewDate 
+FROM User U
+INNER JOIN Review R ON U.UserID = R.UserID;
+
+SELECT U.Username, S.FlightNumber, F.OriginAirport, F.DepartureTime 
+FROM User U
+INNER JOIN Status S ON U.UserID = S.UserID
+INNER JOIN Flights F ON S.FlightNumber = F.FlightNumber;
+
+SELECT U.Username, A.Name, A.City, A.Country 
+FROM User U
+INNER JOIN Booked B ON U.UserID = B.UserID
+INNER JOIN Accommodation A ON B.AccommodationID = A.AccommodationID;
+
+SELECT U.Username, C.Brand, CR.Name AS RentalAgency 
+FROM User U
+INNER JOIN Renting R ON U.UserID = R.UserID
+INNER JOIN Car C ON R.LicensePlate = C.LicensePlate
+INNER JOIN Owned O ON C.LicensePlate = O.LicensePlate
+INNER JOIN CarRentals CR ON O.RentalID = CR.RentalID;
+
+SELECT U.Username, B.TotalAmount, C.Brand, C.PricePerDay 
+FROM User U
+INNER JOIN Booking B ON U.UserID = B.UserID
+INNER JOIN Renting R ON U.UserID = R.UserID
+INNER JOIN Car C ON R.LicensePlate = C.LicensePlate;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
